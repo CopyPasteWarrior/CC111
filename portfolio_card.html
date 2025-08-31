@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Card</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="imgs/icon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1f25 0%, #000 100%);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        #root {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-wrapper {
+            width: 380px;
+            position: relative;
+            margin: 60px 0;
+            cursor: pointer;
+        }
+        
+        .card {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(36, 4, 65, 0.8);
+            padding: 15px;
+            color: #fff;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-active {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgb(135, 6, 255);
+        }
+        
+        /* External diamond container */
+        .external-diamonds {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            z-index: 10;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .diamond {
+            position: absolute;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(45deg);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(141, 18, 255, 0.611);
+            transition: transform 0.3s ease;
+        }
+        
+        .diamond:hover {
+            transform: rotate(45deg) scale(1.3);
+        }
+        
+        .profile-diamond {
+            width: 80px;
+            height: 80px;
+            z-index: 2;
+        }
+        
+        .logo-diamond {
+            width: 40px;
+            height: 40px;
+            top: 45px;
+            left: 45px;
+            z-index: 3;
+            background: #ffffff;
+        }
+        
+        .diamond-content {
+            transform: rotate(-45deg);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .diamond-image {
+            width: 140%;
+            height: 140%;
+            object-fit: cover;
+        }
+        
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .name-section {
+            text-align: right;
+            flex: 1;
+            padding-left: 90px;
+        }
+        
+        .name {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(36, 4, 65, 0.611);
+        }
+        
+        .course {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .role-section {
+            margin-bottom: 30px;
+        }
+        
+        .role-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .role {
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(36, 4, 65, 0.611);
+        }
+        
+        .proficiency-section {
+            margin-bottom: 30px;
+        }
+        
+        .skill {
+            margin-bottom: 15px;
+        }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .skill-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .skill-value {
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(244, 244, 244, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .html-progress {
+            width: 75%;
+            background: #ff9933;
+        }
+        
+        .css-progress {
+            width: 100%;
+            background: #33ccff;
+        }
+        
+        .js-progress {
+            width: 82%;
+            background: #ffcc00;
+        }
+        
+        .about-section {
+            border-radius: 10px;
+        }
+        
+        .about-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .about-content {
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        .divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 5px 0;
+        }
+        
+        .divider1 {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 15px 0;
+        }
+        
+        /* Spark effects */
+        .spark {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 20;
+            animation: sparkAnimation 1s ease-out forwards;
+        }
+        
+        .spark-1 {
+            top: 20%;
+            left: 50%;
+            background: #ff9933;
+        }
+        
+        .spark-2 {
+            top: 40%;
+            left: 20%;
+            background: #33ccff;
+        }
+        
+        .spark-3 {
+            top: 60%;
+            left: 80%;
+            background: #ffcc00;
+        }
+        
+        .spark-4 {
+            top: 80%;
+            left: 30%;
+            background: #fff;
+        }
+        
+        .spark-5 {
+            top: 30%;
+            left: 70%;
+            background: #2ecc71;
+        }
+        
+        @keyframes sparkAnimation {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(
+                    calc(var(--tx) * 100px), 
+                    calc(var(--ty) * 100px)
+                ) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Generate random spark directions */
+        .spark-1 { --tx: 0.5; --ty: -0.7; }
+        .spark-2 { --tx: -0.8; --ty: -0.6; }
+        .spark-3 { --tx: 0.7; --ty: 0.5; }
+        .spark-4 { --tx: -0.5; --ty: 0.8; }
+        .spark-5 { --tx: 0.6; --ty: -0.5; }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const PortfolioCard = () => {
+            const [isClicked, setIsClicked] = useState(false);
+            
+            const handleCardClick = () => {
+                setIsClicked(true);
+                setTimeout(() => setIsClicked(false), 1000);
+            };
+
+            useEffect(() => {
+                // Initialize particles.js
+                if (typeof particlesJS !== 'undefined') {
+                    particlesJS('particles-js', {
+                        particles: {
+                            number: {
+                                value: 80,
+                                density: {
+                                    enable: true,
+                                    value_area: 800
+                                }
+                            },
+                            color: {
+                                value: "#ffffff"
+                            },
+                            shape: {
+                                type: "circle",
+                                stroke: {
+                                    width: 0,
+                                    color: "#000000"
+                                }
+                            },
+                            opacity: {
+                                value: 0.5,
+                                random: true,
+                                anim: {
+                                    enable: true,
+                                    speed: 1,
+                                    opacity_min: 0.1,
+                                    sync: false
+                                }
+                            },
+                            size: {
+                                value: 3,
+                                random: true,
+                                anim: {
+                                    enable: true,
+                                    speed: 3,
+                                    size_min: 0.3,
+                                    sync: false
+                                }
+                            },
+                            line_linked: {
+                                enable: true,
+                                distance: 150,
+                                color: "#ffffff",
+                                opacity: 0.4,
+                                width: 1
+                            },
+                            move: {
+                                enable: true,
+                                speed: 2,
+                                direction: "none",
+                                random: true,
+                                straight: false,
+                                out_mode: "out",
+                                bounce: false,
+                                attract: {
+                                    enable: false,
+                                    rotateX: 600,
+                                    rotateY: 1200
+                                }
+                            }
+                        },
+                        interactivity: {
+                            detect_on: "canvas",
+                            events: {
+                                onhover: {
+                                    enable: true,
+                                    mode: "grab"
+                                },
+                                onclick: {
+                                    enable: true,
+                                    mode: "push"
+                                },
+                                resize: true
+                            },
+                            modes: {
+                                grab: {
+                                    distance: 140,
+                                    line_linked: {
+                                        opacity: 1
+                                    }
+                                },
+                                push: {
+                                    particles_nb: 4
+                                }
+                            }
+                        },
+                        retina_detect: true
+                    });
+                }
+            }, []);
+
+            return (
+                <div className="card-wrapper" onClick={handleCardClick}>
+                    {/* Spark effects */}
+                    {isClicked && (
+                        <>
+                            <div className="spark spark-1"></div>
+                            <div className="spark spark-2"></div>
+                            <div className="spark spark-3"></div>
+                            <div className="spark spark-4"></div>
+                            <div className="spark spark-5"></div>
+                        </>
+                    )}
+                    
+                    {/* Diamond container outside the card */}
+                    <div className="external-diamonds">
+                        <div className="diamond profile-diamond">
+                            <div className="diamond-content">
+                                <img 
+                                    src="imgs/pfp.png" 
+                                    alt="Profile" 
+                                    className="diamond-image"
+                                />
+                            </div>
+                        </div>
+                        <div className="diamond logo-diamond">
+                            <div className="diamond-content">
+                                <img 
+                                    src="imgs/logo.gif" 
+                                    alt="Logo" 
+                                    className="diamond-image"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className={`card ${isClicked ? 'card-active' : ''}`}>
+                        <div className="card-top">
+                            <div className="name-section">
+                                <div className="name">Xavier Azcona</div>
+                                <hr className="divider" />
+                                <div className="course">course / B S I T</div>
+                                <div className="divider"></div>
+                            </div>
+                        </div>
+                        
+                        <div className="role-section">
+                            <div className="role-label">Role</div>
+                            <div className="role">Frontend Developer</div>
+                            <div className="divider1"></div>
+                            <div className="proficiency-title">Proficiency</div>
+                        </div>
+                        
+                        <div className="proficiency-section">
+                            <div className="skill">
+                                <div className="skill-header">
+                                    <span className="skill-name">HTML</span>
+                                    <span className="skill-value">75/100</span>
+                                </div>
+                                <div className="progress-bar">
+                                    <div className="progress html-progress"></div>
+                                </div>
+                            </div>
+                            
+                            <div className="skill">
+                                <div className="skill-header">
+                                    <span className="skill-name">CSS</span>
+                                    <span className="skill-value">100/100</span>
+                                </div>
+                                <div className="progress-bar">
+                                    <div className="progress css-progress"></div>
+                                </div>
+                            </div>
+                            
+                            <div className="skill">
+                                <div className="skill-header">
+                                    <span className="skill-name">JavaScript</span>
+                                    <span className="skill-value">82/100</span>
+                                </div>
+                                <div className="progress-bar">
+                                    <div className="progress js-progress"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr></hr>
+                        
+                        <div className="about-section">
+                            <div className="about-title">About Me</div>
+                            <div className="about-content">
+                                Passionate frontend developer with expertise in creating responsive and user-friendly web interfaces. 
+                                I love turning complex problems into simple, beautiful and intuitive designs.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PortfolioCard />);
+    </script>
+</body>
+</html>
